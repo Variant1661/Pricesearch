@@ -11,7 +11,7 @@ import streamlit as st
 # PAGE CONFIG
 # ------------------------------------------------------
 st.set_page_config(
-    page_title="Lowest Price Finder",
+    page_title="PriceSearch",
     page_icon="🛒",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -25,85 +25,95 @@ st.markdown(
     """
     <style>
         .block-container {
-            padding-top: 2rem;
+            padding-top: 1.6rem;
             padding-bottom: 3rem;
+            max-width: 1400px;
         }
 
         .hero {
-            padding: 30px;
-            border-radius: 24px;
-            background: linear-gradient(135deg, #0f172a 0%, #134e4a 100%);
+            padding: 28px 30px;
+            border-radius: 26px;
+            background: linear-gradient(135deg, #111827 0%, #0f766e 100%);
             color: white;
             margin-bottom: 24px;
+            box-shadow: 0 14px 40px rgba(15, 23, 42, 0.20);
         }
 
         .hero-title {
-            font-size: 2.6rem;
+            font-size: 2.5rem;
             font-weight: 900;
-            margin-bottom: 8px;
             letter-spacing: -0.04em;
+            margin-bottom: 6px;
         }
 
         .hero-subtitle {
-            font-size: 1.08rem;
-            opacity: 0.92;
-            max-width: 850px;
+            font-size: 1rem;
+            opacity: 0.88;
+            max-width: 780px;
         }
 
-        .note-box {
-            padding: 14px 16px;
-            border-radius: 14px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            color: #475569;
-            font-size: 0.95rem;
-            margin-top: 12px;
+        .search-card {
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 22px;
+            background: #ffffff;
+            box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+            margin-bottom: 22px;
         }
 
         .deal-card {
             border: 1px solid #e5e7eb;
-            border-radius: 18px;
-            padding: 18px;
+            border-radius: 22px;
+            padding: 20px;
             background: #ffffff;
-            box-shadow: 0 6px 22px rgba(15, 23, 42, 0.06);
-            margin-bottom: 14px;
+            box-shadow: 0 8px 26px rgba(15, 23, 42, 0.06);
+            margin-bottom: 16px;
+        }
+
+        .deal-card:hover {
+            box-shadow: 0 12px 34px rgba(15, 23, 42, 0.10);
+            transform: translateY(-1px);
+            transition: 0.15s ease-in-out;
         }
 
         .deal-title {
             font-size: 1.05rem;
-            font-weight: 800;
+            font-weight: 850;
             color: #111827;
-            margin-bottom: 8px;
+            margin-top: 8px;
+            margin-bottom: 10px;
+            line-height: 1.35;
         }
 
         .deal-seller {
             color: #4b5563;
             font-size: 0.92rem;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .deal-price {
-            font-size: 1.5rem;
-            font-weight: 900;
+            font-size: 1.65rem;
+            font-weight: 950;
             color: #0f766e;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
         }
 
         .deal-meta {
-            color: #6b7280;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin-bottom: 12px;
+            color: #64748b;
+            font-size: 0.92rem;
+            line-height: 1.7;
+            margin-bottom: 14px;
         }
 
         .deal-button {
             display: inline-block;
-            padding: 9px 14px;
-            border-radius: 10px;
+            padding: 10px 15px;
+            border-radius: 12px;
             background: #0f766e;
             color: white !important;
             text-decoration: none;
-            font-weight: 700;
+            font-weight: 750;
             font-size: 0.9rem;
         }
 
@@ -112,48 +122,91 @@ st.markdown(
             color: white !important;
         }
 
-        .rank-badge {
+        .badge {
             display: inline-block;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 850;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+
+        .badge-rank {
             background: #ecfeff;
             color: #155e75;
             border: 1px solid #a5f3fc;
-            padding: 4px 9px;
-            border-radius: 999px;
-            font-size: 0.78rem;
-            font-weight: 800;
-            margin-bottom: 10px;
         }
 
-        .contract-badge {
-            display: inline-block;
+        .badge-contract {
             background: #fff7ed;
             color: #9a3412;
             border: 1px solid #fed7aa;
-            padding: 4px 9px;
-            border-radius: 999px;
-            font-size: 0.78rem;
-            font-weight: 800;
-            margin-left: 6px;
-            margin-bottom: 10px;
         }
 
-        .outright-badge {
-            display: inline-block;
+        .badge-outright {
             background: #f0fdf4;
             color: #166534;
             border: 1px solid #bbf7d0;
-            padding: 4px 9px;
-            border-radius: 999px;
-            font-size: 0.78rem;
-            font-weight: 800;
-            margin-left: 6px;
-            margin-bottom: 10px;
         }
 
-        .footer-note {
+        .badge-new {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
+        .badge-refurb {
+            background: #fefce8;
+            color: #854d0e;
+            border: 1px solid #fde68a;
+        }
+
+        .badge-used {
+            background: #fdf2f8;
+            color: #be185d;
+            border: 1px solid #fbcfe8;
+        }
+
+        .badge-open {
+            background: #f5f3ff;
+            color: #6d28d9;
+            border: 1px solid #ddd6fe;
+        }
+
+        .badge-unknown {
+            background: #f8fafc;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+        }
+
+        .section-title {
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: #111827;
+            margin-top: 10px;
+            margin-bottom: 14px;
+            letter-spacing: -0.03em;
+        }
+
+        .mini-note {
             color: #64748b;
-            font-size: 0.85rem;
-            margin-top: 20px;
+            font-size: 0.86rem;
+            margin-top: 8px;
+        }
+
+        div[data-testid="stMetric"] {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            padding: 16px 18px;
+            border-radius: 18px;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+        }
+
+        .stButton > button {
+            border-radius: 14px;
+            font-weight: 800;
+            height: 3rem;
         }
     </style>
     """,
@@ -180,10 +233,9 @@ SERPAPI_KEY = get_serpapi_key()
 st.markdown(
     """
     <div class="hero">
-        <div class="hero-title">🛒 Lowest Price Finder</div>
+        <div class="hero-title">PriceSearch</div>
         <div class="hero-subtitle">
-            Search products, compare outright prices and contract deals, and sort by the real estimated total cost.
-            Best for phones, electronics, appliances, and other items that may be sold upfront or on monthly plans.
+            Compare outright prices, contracts, refurbished deals and everyday shopping results in one place.
         </div>
     </div>
     """,
@@ -195,41 +247,25 @@ st.markdown(
 # SIDEBAR
 # ------------------------------------------------------
 with st.sidebar:
-    st.header("Search settings")
+    st.header("Filters")
 
     country = st.selectbox(
-        "Country / Market",
-        options=["uk", "us", "in", "ca", "au", "de", "fr"],
+        "Market",
+        ["uk", "us", "in", "ca", "au", "de", "fr"],
         index=0,
-        help="Choose the Google Shopping market.",
     )
 
     max_results = st.slider(
-        "Maximum results",
+        "Results",
         min_value=5,
         max_value=60,
         value=25,
         step=5,
     )
 
-    include_delivery = st.checkbox(
-        "Include delivery when available",
-        value=True,
-    )
-
-    show_outright = st.checkbox(
-        "Show outright purchases",
-        value=True,
-    )
-
-    show_contracts = st.checkbox(
-        "Show contracts / subscriptions",
-        value=True,
-    )
-
     sort_mode = st.selectbox(
         "Sort by",
-        options=[
+        [
             "Estimated total cost",
             "Displayed upfront price",
             "Monthly cost",
@@ -239,29 +275,49 @@ with st.sidebar:
 
     st.divider()
 
-    if SERPAPI_KEY:
-        st.success("API key connected")
-    else:
-        st.error("API key missing")
-        st.caption("Add SERPAPI_KEY in Streamlit Secrets.")
+    offer_types = st.multiselect(
+        "Offer type",
+        ["Outright purchase", "Contract / subscription"],
+        default=["Outright purchase", "Contract / subscription"],
+    )
+
+    condition_filter = st.multiselect(
+        "Condition",
+        [
+            "Brand new",
+            "Refurbished",
+            "Used / pre-owned",
+            "Open box",
+            "Unknown",
+        ],
+        default=[
+            "Brand new",
+            "Refurbished",
+            "Used / pre-owned",
+            "Open box",
+            "Unknown",
+        ],
+    )
+
+    include_delivery = st.checkbox(
+        "Include delivery where detected",
+        value=True,
+    )
 
     st.divider()
 
-    st.caption(
-        "For phones, try: `iPhone 17 Pro Max 1TB unlocked`, "
-        "`Samsung S25 Ultra 256GB contract`, or `iPhone 16 Pro 256GB SIM free`."
-    )
+    if SERPAPI_KEY:
+        st.success("API connected")
+    else:
+        st.error("API key missing")
+
+    st.caption("Use exact model names for better results.")
 
 
 # ------------------------------------------------------
 # HELPER FUNCTIONS
 # ------------------------------------------------------
 def parse_price(value):
-    """
-    Converts strings like:
-    £129.99, $1,299, ₹54,990, €899
-    into float values.
-    """
     if value is None:
         return None
 
@@ -323,10 +379,7 @@ def money(value, currency="£"):
 
 
 def safe_link(link):
-    if not link:
-        return "#"
-
-    return link
+    return link if link else "#"
 
 
 def format_rating(row):
@@ -344,21 +397,67 @@ def format_rating(row):
         except Exception:
             parts.append(f"{reviews} reviews")
 
-    return " | ".join(parts) if parts else "Rating not shown"
+    return " · ".join(parts) if parts else "No rating"
+
+
+def detect_condition(text):
+    text = str(text).lower()
+
+    refurbished_keywords = [
+        "refurbished",
+        "renewed",
+        "reconditioned",
+        "certified refurbished",
+        "excellent condition",
+        "very good condition",
+        "good condition",
+        "fair condition",
+        "grade a",
+        "grade b",
+        "grade c",
+    ]
+
+    used_keywords = [
+        "used",
+        "pre-owned",
+        "pre owned",
+        "second hand",
+        "previously owned",
+    ]
+
+    open_box_keywords = [
+        "open box",
+        "open-box",
+        "opened box",
+        "ex display",
+        "ex-display",
+        "display model",
+    ]
+
+    new_keywords = [
+        "brand new",
+        "new",
+        "sealed",
+        "unopened",
+    ]
+
+    if any(keyword in text for keyword in refurbished_keywords):
+        return "Refurbished"
+
+    if any(keyword in text for keyword in used_keywords):
+        return "Used / pre-owned"
+
+    if any(keyword in text for keyword in open_box_keywords):
+        return "Open box"
+
+    if any(keyword in text for keyword in new_keywords):
+        return "Brand new"
+
+    return "Unknown"
 
 
 def detect_contract_details(text):
-    """
-    Detects contract/subscription style offers.
-
-    Examples:
-    - £9 now, £130.20 per month, 12 months
-    - £0 upfront, £45/mo, 24 months
-    - Monthly payment £35.99, duration 36 months
-    """
-
-    original_text = str(text)
-    text = original_text.lower().replace(",", "")
+    text = str(text).lower().replace(",", "")
 
     contract_keywords = [
         "per month",
@@ -367,8 +466,11 @@ def detect_contract_details(text):
         "monthly",
         "contract",
         "12 months",
+        "18 months",
         "24 months",
+        "30 months",
         "36 months",
+        "48 months",
         "sim",
         "data",
         "airtime",
@@ -376,6 +478,7 @@ def detect_contract_details(text):
         "£0 now",
         "£0.00 now",
         "today's payment",
+        "today’s payment",
         "base price",
         "duration",
     ]
@@ -386,7 +489,6 @@ def detect_contract_details(text):
     monthly_cost = None
     duration_months = None
 
-    # Upfront / today / now price
     upfront_patterns = [
         r"£\s*(\d+(?:\.\d+)?)\s*now",
         r"£\s*(\d+(?:\.\d+)?)\s*today",
@@ -403,7 +505,6 @@ def detect_contract_details(text):
             upfront_cost = float(match.group(1))
             break
 
-    # Monthly payment
     monthly_patterns = [
         r"£\s*(\d+(?:\.\d+)?)\s*(?:per month|/mo|pm)",
         r"£\s*(\d+(?:\.\d+)?)\s*/\s*month",
@@ -417,7 +518,6 @@ def detect_contract_details(text):
             monthly_cost = float(match.group(1))
             break
 
-    # Duration
     duration_patterns = [
         r"duration\s*(\d+)\s*months",
         r"(\d+)\s*months",
@@ -456,6 +556,25 @@ def classify_offer_type(contract_info):
     return "Outright purchase"
 
 
+def condition_badge(condition):
+    badge_class = {
+        "Brand new": "badge-new",
+        "Refurbished": "badge-refurb",
+        "Used / pre-owned": "badge-used",
+        "Open box": "badge-open",
+        "Unknown": "badge-unknown",
+    }.get(condition, "badge-unknown")
+
+    return f'<span class="badge {badge_class}">{condition}</span>'
+
+
+def offer_badge(offer_type):
+    if offer_type == "Contract / subscription":
+        return '<span class="badge badge-contract">Contract</span>'
+
+    return '<span class="badge badge-outright">Outright</span>'
+
+
 def search_google_shopping(query, country_code, api_key):
     url = "https://serpapi.com/search.json"
 
@@ -482,7 +601,6 @@ def normalise_results(data, include_delivery_cost=True):
         price_text = item.get("price", "")
         extracted_price = item.get("extracted_price")
         source = item.get("source", "")
-
         link = item.get("link") or item.get("product_link")
 
         delivery_text = (
@@ -495,6 +613,7 @@ def normalise_results(data, include_delivery_cost=True):
 
         full_text = f"{title} {price_text} {source} {delivery_text} {item}"
 
+        condition = detect_condition(full_text)
         contract_info = detect_contract_details(full_text)
         offer_type = classify_offer_type(contract_info)
 
@@ -517,13 +636,11 @@ def normalise_results(data, include_delivery_cost=True):
             if include_delivery_cost and price is not None and delivery_cost is not None:
                 estimated_total = price + delivery_cost
 
-        # If contract but total cannot be calculated, keep displayed price but mark as incomplete
-        contract_total_complete = contract_info["Estimated contract total"] is not None
-
         rows.append(
             {
                 "Product": title,
                 "Seller": source or get_domain(link),
+                "Condition": condition,
                 "Offer type": offer_type,
                 "Displayed price": price_text,
                 "Price": price,
@@ -531,12 +648,11 @@ def normalise_results(data, include_delivery_cost=True):
                 "Monthly cost": contract_info["Monthly cost"],
                 "Duration months": contract_info["Duration months"],
                 "Estimated total": estimated_total,
-                "Contract total complete": contract_total_complete,
+                "Contract total complete": contract_info["Estimated contract total"] is not None,
                 "Delivery info": delivery_text,
                 "Rating": item.get("rating"),
                 "Reviews": item.get("reviews"),
                 "Link": link,
-                "Thumbnail": item.get("thumbnail"),
                 "Currency": currency,
             }
         )
@@ -567,44 +683,68 @@ def sort_results(df, sort_choice):
     return df.sort_values(by="Estimated total", ascending=True, na_position="last").reset_index(drop=True)
 
 
-def offer_badge(offer_type):
-    if offer_type == "Contract / subscription":
-        return '<span class="contract-badge">Contract / subscription</span>'
+def result_card(row, position=None, best=False):
+    currency = row.get("Currency", "£")
+    offer_type = row.get("Offer type", "Outright purchase")
+    condition = row.get("Condition", "Unknown")
 
-    return '<span class="outright-badge">Outright purchase</span>'
+    if offer_type == "Contract / subscription":
+        headline = f"Estimated total: {money(row.get('Estimated total'), currency)}"
+        details = f"""
+            Upfront: {money(row.get('Upfront cost'), currency)} ·
+            Monthly: {money(row.get('Monthly cost'), currency)} ·
+            {int(row.get('Duration months')) if pd.notna(row.get('Duration months')) else 'Unknown'} months
+        """
+    else:
+        headline = f"Price: {row.get('Displayed price')}"
+        details = f"Delivery: {row.get('Delivery info') or 'Not shown'}"
+
+    rank_text = "Best result" if best else f"#{position}"
+
+    return f"""
+        <div class="deal-card">
+            <div>
+                <span class="badge badge-rank">{rank_text}</span>
+                {offer_badge(offer_type)}
+                {condition_badge(condition)}
+            </div>
+            <div class="deal-title">{row.get('Product')}</div>
+            <div class="deal-seller">Seller: {row.get('Seller')}</div>
+            <div class="deal-price">{headline}</div>
+            <div class="deal-meta">
+                {details}<br>
+                Displayed: {row.get('Displayed price')}<br>
+                {format_rating(row)}
+            </div>
+            <a class="deal-button" href="{safe_link(row.get('Link'))}" target="_blank">
+                Open deal
+            </a>
+        </div>
+    """
 
 
 # ------------------------------------------------------
 # SEARCH UI
 # ------------------------------------------------------
-search_col, button_col = st.columns([5, 1.3])
+st.markdown('<div class="search-card">', unsafe_allow_html=True)
+
+search_col, button_col = st.columns([5, 1.2])
 
 with search_col:
     product = st.text_input(
-        "What product are you searching for?",
+        "Search product",
         placeholder="Example: iPhone 17 Pro Max 1TB, Sony WH-1000XM5, Dyson V15",
+        label_visibility="collapsed",
     )
 
 with button_col:
-    st.write("")
-    st.write("")
     search_clicked = st.button(
         "Search",
         type="primary",
         use_container_width=True,
     )
 
-
-st.markdown(
-    """
-    <div class="note-box">
-        This tool uses Google Shopping data through SerpApi. 
-        It shows both outright purchase prices and contract/subscription offers where available.
-        For contracts, compare the estimated total cost, not only the upfront price.
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+st.markdown("</div>", unsafe_allow_html=True)
 
 
 # ------------------------------------------------------
@@ -612,16 +752,19 @@ st.markdown(
 # ------------------------------------------------------
 if search_clicked:
     if not product.strip():
-        st.error("Please enter a product name first.")
+        st.error("Enter a product name.")
 
     elif not SERPAPI_KEY:
-        st.error("SerpApi API key is missing. Add SERPAPI_KEY in Streamlit Secrets and reboot the app.")
+        st.error("API key missing. Add SERPAPI_KEY in Streamlit Secrets.")
 
-    elif not show_outright and not show_contracts:
-        st.error("Please select at least one offer type: outright purchases or contracts.")
+    elif not offer_types:
+        st.error("Select at least one offer type.")
+
+    elif not condition_filter:
+        st.error("Select at least one condition.")
 
     else:
-        with st.spinner("Searching prices online..."):
+        with st.spinner("Searching deals..."):
             try:
                 raw_data = search_google_shopping(
                     query=product.strip(),
@@ -635,104 +778,48 @@ if search_clicked:
                 )
 
                 if df.empty:
-                    st.warning(
-                        "No prices found. Try a more specific search, such as model number, colour, size, storage, or SIM-free/contract."
-                    )
+                    st.warning("No results found. Try a more specific model name.")
 
                 else:
-                    if not show_outright:
-                        df = df[df["Offer type"] != "Outright purchase"]
-
-                    if not show_contracts:
-                        df = df[df["Offer type"] != "Contract / subscription"]
+                    df = df[df["Offer type"].isin(offer_types)]
+                    df = df[df["Condition"].isin(condition_filter)]
 
                     if df.empty:
-                        st.warning("No results found for the selected offer type filters.")
+                        st.warning("No results match your filters.")
 
                     else:
                         df = sort_results(df, sort_mode)
                         df = df.head(max_results).copy()
+
                         best = df.iloc[0]
                         currency = best.get("Currency", "£")
 
-                        st.divider()
+                        st.markdown('<div class="section-title">Overview</div>', unsafe_allow_html=True)
 
-                        # ------------------------------------------------------
-                        # METRICS
-                        # ------------------------------------------------------
-                        metric_1, metric_2, metric_3, metric_4 = st.columns(4)
+                        m1, m2, m3, m4 = st.columns(4)
 
-                        with metric_1:
-                            st.metric(
-                                "Lowest estimated total",
-                                money(best["Estimated total"], currency),
-                            )
+                        with m1:
+                            st.metric("Best total", money(best["Estimated total"], currency))
 
-                        with metric_2:
+                        with m2:
                             st.metric("Seller", best["Seller"])
 
-                        with metric_3:
-                            st.metric("Offer type", best["Offer type"])
+                        with m3:
+                            st.metric("Type", best["Offer type"].replace(" / subscription", ""))
 
-                        with metric_4:
-                            average_total = df["Estimated total"].mean()
-                            st.metric("Average estimated total", money(average_total, currency))
+                        with m4:
+                            st.metric("Condition", best["Condition"])
 
-                        if best["Offer type"] == "Contract / subscription" and not best["Contract total complete"]:
-                            st.warning(
-                                "The best result appears to be a contract, but the app could not fully detect monthly cost or duration. Open the product page before comparing."
-                            )
+                        st.markdown('<div class="section-title">Best result</div>', unsafe_allow_html=True)
+                        st.markdown(result_card(best, best=True), unsafe_allow_html=True)
 
-                        # ------------------------------------------------------
-                        # BEST DEAL CARD
-                        # ------------------------------------------------------
-                        st.subheader("Best result found")
-
-                        if best["Offer type"] == "Contract / subscription":
-                            main_price_line = f"Estimated total: {money(best['Estimated total'], currency)}"
-                            extra_lines = f"""
-                                Upfront: {money(best['Upfront cost'], currency)}<br>
-                                Monthly: {money(best['Monthly cost'], currency)}<br>
-                                Duration: {int(best['Duration months']) if pd.notna(best['Duration months']) else 'Not shown'} months<br>
-                            """
-                        else:
-                            main_price_line = f"Price: {best['Displayed price']}"
-                            extra_lines = f"""
-                                Delivery: {best['Delivery info'] or 'Not shown'}<br>
-                            """
-
-                        st.markdown(
-                            f"""
-                            <div class="deal-card">
-                                <div>
-                                    <span class="rank-badge">Best match</span>
-                                    {offer_badge(best["Offer type"])}
-                                </div>
-                                <div class="deal-title">{best["Product"]}</div>
-                                <div class="deal-seller">Seller: {best["Seller"]}</div>
-                                <div class="deal-price">{main_price_line}</div>
-                                <div class="deal-meta">
-                                    Displayed price: {best["Displayed price"]}<br>
-                                    {extra_lines}
-                                    {format_rating(best)}
-                                </div>
-                                <a class="deal-button" href="{safe_link(best["Link"])}" target="_blank">
-                                    Open product
-                                </a>
-                            </div>
-                            """,
-                            unsafe_allow_html=True,
-                        )
-
-                        # ------------------------------------------------------
-                        # TABLE
-                        # ------------------------------------------------------
-                        st.subheader("Price comparison table")
+                        st.markdown('<div class="section-title">Compare prices</div>', unsafe_allow_html=True)
 
                         display_df = df[
                             [
                                 "Product",
                                 "Seller",
+                                "Condition",
                                 "Offer type",
                                 "Displayed price",
                                 "Upfront cost",
@@ -753,12 +840,13 @@ if search_clicked:
                             column_config={
                                 "Product": st.column_config.TextColumn("Product", width="large"),
                                 "Seller": st.column_config.TextColumn("Seller", width="medium"),
-                                "Offer type": st.column_config.TextColumn("Offer type", width="medium"),
-                                "Displayed price": st.column_config.TextColumn("Displayed price", width="small"),
+                                "Condition": st.column_config.TextColumn("Condition", width="small"),
+                                "Offer type": st.column_config.TextColumn("Type", width="medium"),
+                                "Displayed price": st.column_config.TextColumn("Displayed", width="small"),
                                 "Upfront cost": st.column_config.NumberColumn("Upfront", format="£%.2f"),
                                 "Monthly cost": st.column_config.NumberColumn("Monthly", format="£%.2f"),
                                 "Duration months": st.column_config.NumberColumn("Months", format="%d"),
-                                "Estimated total": st.column_config.NumberColumn("Estimated total", format="£%.2f"),
+                                "Estimated total": st.column_config.NumberColumn("Est. total", format="£%.2f"),
                                 "Delivery info": st.column_config.TextColumn("Delivery", width="medium"),
                                 "Rating": st.column_config.NumberColumn("Rating", format="%.1f"),
                                 "Reviews": st.column_config.NumberColumn("Reviews", format="%d"),
@@ -769,62 +857,24 @@ if search_clicked:
                         csv = df.to_csv(index=False).encode("utf-8")
 
                         st.download_button(
-                            "Download results as CSV",
+                            "Download CSV",
                             data=csv,
-                            file_name="lowest_price_results.csv",
+                            file_name="pricesearch_results.csv",
                             mime="text/csv",
                         )
 
-                        # ------------------------------------------------------
-                        # TOP CARDS
-                        # ------------------------------------------------------
-                        st.subheader("Top cheapest options")
+                        st.markdown('<div class="section-title">Top deals</div>', unsafe_allow_html=True)
 
-                        for position, (_, row) in enumerate(df.head(5).iterrows(), start=1):
-                            row_currency = row.get("Currency", currency)
-
-                            if row["Offer type"] == "Contract / subscription":
-                                row_price_line = f"Estimated total: {money(row['Estimated total'], row_currency)}"
-                                row_extra = f"""
-                                    Upfront: {money(row['Upfront cost'], row_currency)}<br>
-                                    Monthly: {money(row['Monthly cost'], row_currency)}<br>
-                                    Duration: {int(row['Duration months']) if pd.notna(row['Duration months']) else 'Not shown'} months<br>
-                                """
-                            else:
-                                row_price_line = f"Price: {row['Displayed price']}"
-                                row_extra = f"""
-                                    Delivery: {row['Delivery info'] or 'Not shown'}<br>
-                                """
-
+                        for position, (_, row) in enumerate(df.head(6).iterrows(), start=1):
                             st.markdown(
-                                f"""
-                                <div class="deal-card">
-                                    <div>
-                                        <span class="rank-badge">#{position}</span>
-                                        {offer_badge(row["Offer type"])}
-                                    </div>
-                                    <div class="deal-title">{row["Product"]}</div>
-                                    <div class="deal-seller">Seller: {row["Seller"]}</div>
-                                    <div class="deal-price">{row_price_line}</div>
-                                    <div class="deal-meta">
-                                        Displayed price: {row["Displayed price"]}<br>
-                                        {row_extra}
-                                        {format_rating(row)}
-                                    </div>
-                                    <a class="deal-button" href="{safe_link(row["Link"])}" target="_blank">
-                                        View deal
-                                    </a>
-                                </div>
-                                """,
+                                result_card(row, position=position),
                                 unsafe_allow_html=True,
                             )
 
                         st.markdown(
                             """
-                            <div class="footer-note">
-                                Contract results are estimated from available shopping text. Always check the final checkout page,
-                                total payable, delivery, warranty, returns policy, and whether the product is new, used, refurbished,
-                                locked, unlocked, SIM-free, or bundled with airtime.
+                            <div class="mini-note">
+                                Always check the retailer page before buying. Contract totals are estimated from available shopping data.
                             </div>
                             """,
                             unsafe_allow_html=True,
@@ -834,7 +884,7 @@ if search_clicked:
                 st.error(f"API error: {e}")
 
             except requests.Timeout:
-                st.error("The search timed out. Try again in a few seconds.")
+                st.error("Search timed out. Try again.")
 
             except Exception as e:
                 st.error(f"Something went wrong: {e}")
